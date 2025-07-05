@@ -1,0 +1,21 @@
+{
+  "name": "enterprise-ai-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^3.0.0",
+    "@pinia/nuxt": "^0.7.0",
+    "nuxt": "^3.17.6",
+    "pinia": "^2.3.0"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.0"
+  }
+}

@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+
+:root{
+--ui-primary: var(--color-primary-500);
+--ui-secondary: var(--color-secondary-500);
+--ui-tertiary: var(--color-tertiary-500);
+--ui-accent: var(--color-primary-600);
+--ui-accent-secondary: var(--color-secondary-600);
+--ui-color-neutral-50: #f9fafb;
+--ui-color-neutral-100: #f3f4f6;
+--ui-color-neutral-200: #e5e7eb;
+--ui-color-neutral-300: #d1d5db;
+--ui-color-neutral-400: #9ca3af;
+--ui-color-neutral-500: #6b7280;
+--ui-color-neutral-600: #4b5563;
+--ui-color-neutral-700: #374151;
+--ui-color-neutral-800: #1f2937;
+--ui-color-neutral-900: #111827;
+--ui-color-neutral-950: #030712;
+}
+
+@theme {
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+
+
+  /* Slate tertiary */
+  --color-tertiary-50: #f8fafc;
+  --color-tertiary-100: #f1f5f9;
+  --color-tertiary-200: #e2e8f0;
+  --color-tertiary-300: #cbd5e1;
+  --color-tertiary-400: #94a3b8;
+  --color-tertiary-500: #64748b; /* Nice slate */
+  --color-tertiary-600: #475569;
+  --color-tertiary-700: #334155;
+  --color-tertiary-800: #1e293b;
+  --color-tertiary-900: #0f172a;
+
+  /* Colors */
+
+  --color-primary-50: #ebf8ff;
+  --color-primary-100: #bee3f8;
+  --color-primary-200: #90cdf4;
+  --color-primary-300: #63b3ed;
+  --color-primary-400: #4299e1;
+  --color-primary-500: #3182ce; 
+  --color-primary-600: #2b6cb0;
+  --color-primary-700: #2c5282;
+  --color-primary-800: #2a4365;
+  --color-primary-900: #1a365d;
+
+  --color-secondary-50: #faf5ff;
+  --color-secondary-100: #e9d8fd;
+  --color-secondary-200: #d6bcfa;
+  --color-secondary-300: #b794f4;
+  --color-secondary-400: #9f7aea;
+  --color-secondary-500: #805ad5; 
+  --color-secondary-600: #6b46c1;
+  --color-secondary-700: #553c9a;
+  --color-secondary-800: #44337a;
+  --color-secondary-900: #322659;   
+
+
+  /* Radius */
+  --radius-lg: 10px;
+
+  /* Spacing */
+  --spacing-128: 32rem;
+  
+}
+
+.dark {
+  /* Least prominent text */
+  --ui-text-dimmed: var(--ui-color-neutral-500);
+  /* Slightly muted text */
+  --ui-text-muted: var(--ui-color-neutral-400);
+  /* Moderately prominent text */
+  --ui-text-toned: var(--ui-color-neutral-300);
+  /* Default text color */
+  --ui-text: var(--ui-color-neutral-200);
+  /* Most prominent text */
+  --ui-text-highlighted: var(--color-white);
+
+  /* Main background color */
+  --ui-bg: var(--color-gray-950);
+  /* Subtle background */
+  --ui-bg-muted: var(--ui-color-neutral-800);
+  /* Slightly elevated background */
+  --ui-bg-elevated: var(--ui-color-neutral-800);
+  /* More prominent background */
+  --ui-bg-accented: var(--ui-color-neutral-700);
+  /* Inverted background color */
+  --ui-bg-inverted: var(--color-white);
+
+  /* Default border color */
+  --ui-border: var(--ui-color-neutral-800);
+  /* Subtle border */
+  --ui-border-muted: var(--ui-color-neutral-700);
+  /* More prominent border */
+  --ui-border-accented: var(--ui-color-neutral-700);
+  /* Inverted border color */
+  --ui-border-inverted: var(--color-white);
+}
