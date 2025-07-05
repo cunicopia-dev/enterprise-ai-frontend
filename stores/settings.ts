@@ -1,66 +1,80 @@
-import type { BackendConfig, UserApiKeys, PlatformSettings, SettingsState, ProviderType } from '~/types'
+/**
+ * Settings store using our new service layer
+ * Simplified to work with backend-managed providers (no user API keys)
+ */
+
+interface PlatformSettings {
+  theme: 'system' | 'light' | 'dark'
+  defaultProvider: string
+  autoScroll: boolean
+  saveHistory: boolean
+  showTimestamps: boolean
+  streamResponses: boolean
+  maxHistoryLength: number
+  responseTimeout: number
+}
+
+interface BackendConfig {
+  baseUrl: string
+  connected: boolean
+  lastCheck?: Date
+}
 
 export const useSettingsStore = defineStore('settings', () => {
+  // Use our composables
+  const { isConnected, testConnection } = useApi()
+  const { providers, loadProviders } = useProviders()
+  
   // State
   const backendConfig = ref<BackendConfig>({
-    baseUrl: 'https://api.makeitrealconsulting.com',
-    accessKey: '',
+    baseUrl: 'http://localhost:8000',
     connected: false
-  })
-
-  const userApiKeys = ref<UserApiKeys>({
-    openai: '',
-    anthropic: ''
   })
 
   const platformSettings = ref<PlatformSettings>({
     theme: 'system',
-    defaultProvider: 'openai',
+    defaultProvider: 'google', // Default to Gemini 2.5 Flash (free)
     autoScroll: true,
     saveHistory: true,
     showTimestamps: true,
+    streamResponses: true,
     maxHistoryLength: 100,
-    streamResponses: true
+    responseTimeout: 30
   })
 
   const isLoading = ref(false)
   const lastSaved = ref<Date | null>(null)
 
-  // Getters
-  const enabledProviders = computed(() => {
-    const providers: ProviderType[] = []
-    if (userApiKeys.value.openai) providers.push('openai')
-    if (userApiKeys.value.anthropic) providers.push('anthropic')
-    return providers
+  // Getters - simplified since providers come from backend
+  const availableProviders = computed(() => {
+    return providers.value
+      .filter(provider => provider.is_active)
+      .map(provider => ({
+        label: provider.display_name,
+        value: provider.name,
+        icon: getProviderIcon(provider.name),
+        color: getProviderColor(provider.name),
+        models: provider.models || []
+      }))
   })
 
   const hasValidConfiguration = computed(() => {
-    return backendConfig.value.connected && (userApiKeys.value.openai || userApiKeys.value.anthropic)
+    return isConnected.value && availableProviders.value.length > 0
   })
 
-  const availableProviders = computed(() => {
-    return enabledProviders.value.map(provider => ({
-      label: getProviderDisplayName(provider),
-      value: provider,
-      icon: getProviderIcon(provider),
-      color: getProviderColor(provider)
-    }))
+  const currentProvider = computed(() => {
+    return providers.value.find(p => p.name === platformSettings.value.defaultProvider)
   })
 
   // Actions
   const loadSettings = () => {
     if (process.client) {
       try {
-        const savedBackendConfig = localStorage.getItem('enterpriseAI.backendConfig')
-        const savedUserApiKeys = localStorage.getItem('enterpriseAI.userApiKeys')
+        const savedBackendUrl = localStorage.getItem('enterpriseAI.backendUrl')
         const savedPlatformSettings = localStorage.getItem('enterpriseAI.platformSettings')
 
-        if (savedBackendConfig) {
-          backendConfig.value = { ...backendConfig.value, ...JSON.parse(savedBackendConfig) }
-        }
-
-        if (savedUserApiKeys) {
-          userApiKeys.value = { ...userApiKeys.value, ...JSON.parse(savedUserApiKeys) }
+        if (savedBackendUrl) {
+          backendConfig.value.baseUrl = savedBackendUrl
         }
 
         if (savedPlatformSettings) {
@@ -78,31 +92,26 @@ export const useSettingsStore = defineStore('settings', () => {
     isLoading.value = true
     
     try {
-      localStorage.setItem('enterpriseAI.backendConfig', JSON.stringify(backendConfig.value))
-      localStorage.setItem('enterpriseAI.userApiKeys', JSON.stringify(userApiKeys.value))
+      localStorage.setItem('enterpriseAI.backendUrl', backendConfig.value.baseUrl)
       localStorage.setItem('enterpriseAI.platformSettings', JSON.stringify(platformSettings.value))
       
       lastSaved.value = new Date()
       
-      const toast = useToast?.()
-      if (toast) {
-        toast.add({
-          title: 'Settings Saved',
-          description: 'Your configuration has been saved successfully',
-          color: 'green'
-        })
-      }
+      const toast = useToast()
+      toast.add({
+        title: 'Settings Saved',
+        description: 'Your configuration has been saved successfully',
+        color: 'green'
+      })
     } catch (error) {
       console.error('Error saving settings:', error)
       
-      const toast = useToast?.()
-      if (toast) {
-        toast.add({
-          title: 'Save Failed',
-          description: 'Could not save settings. Please try again.',
-          color: 'red'
-        })
-      }
+      const toast = useToast()
+      toast.add({
+        title: 'Save Failed',
+        description: 'Could not save settings. Please try again.',
+        color: 'red'
+      })
       
       throw error
     } finally {
@@ -115,72 +124,84 @@ export const useSettingsStore = defineStore('settings', () => {
     nextTick(() => saveSettings())
   }
 
-  const updateUserApiKeys = (keys: Partial<UserApiKeys>) => {
-    userApiKeys.value = { ...userApiKeys.value, ...keys }
-    nextTick(() => saveSettings())
-  }
-
   const updatePlatformSettings = (settings: Partial<PlatformSettings>) => {
     platformSettings.value = { ...platformSettings.value, ...settings }
     nextTick(() => saveSettings())
   }
 
-  // Backend API helper
-  const apiRequest = async (endpoint: string, options: any = {}) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(backendConfig.value.accessKey && { 'Authorization': `Bearer ${backendConfig.value.accessKey}` })
-      },
-      ...options
+  // Initialize providers and connection
+  const initializeSettings = async () => {
+    isLoading.value = true
+    
+    try {
+      // Load saved settings first
+      loadSettings()
+      
+      // Test connection
+      const connected = await testConnection()
+      backendConfig.value.connected = connected
+      backendConfig.value.lastCheck = new Date()
+      
+      // Load providers if connected
+      if (connected) {
+        await loadProviders()
+        
+        // Ensure default provider is valid
+        const validProvider = providers.value.find(p => p.name === platformSettings.value.defaultProvider && p.is_active)
+        if (!validProvider && providers.value.length > 0) {
+          // Set to Gemini if available, otherwise first active provider
+          const geminiProvider = providers.value.find(p => p.name === 'google' && p.is_active)
+          const firstActiveProvider = providers.value.find(p => p.is_active)
+          
+          if (geminiProvider) {
+            platformSettings.value.defaultProvider = 'google'
+          } else if (firstActiveProvider) {
+            platformSettings.value.defaultProvider = firstActiveProvider.name
+          }
+          
+          saveSettings()
+        }
+      }
+    } catch (error) {
+      console.error('Failed to initialize settings:', error)
+      backendConfig.value.connected = false
+    } finally {
+      isLoading.value = false
     }
-    
-    const response = await fetch(`${backendConfig.value.baseUrl}${endpoint}`, config)
-    
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`)
-    }
-    
-    return response.json()
   }
 
-  const testBackendConnection = async (): Promise<boolean> => {
+  // Watch for connection changes
+  watch(isConnected, (connected) => {
+    backendConfig.value.connected = connected
+    if (connected) {
+      loadProviders()
+    }
+  })
+
+  const testBackendConnectionLegacy = async (): Promise<boolean> => {
     try {
-      // Test health endpoint first (no auth required)
-      const healthResponse = await fetch(`${backendConfig.value.baseUrl}/health`)
-      if (!healthResponse.ok) {
-        throw new Error('Backend health check failed')
-      }
+      const connected = await testConnection()
+      backendConfig.value.connected = connected
+      backendConfig.value.lastCheck = new Date()
       
-      // Test authenticated endpoint if access key is provided
-      if (backendConfig.value.accessKey) {
-        await apiRequest('/providers')
-      }
-      
-      backendConfig.value.connected = true
-      
-      const toast = useToast?.()
-      if (toast) {
-        toast.add({
-          title: 'Backend Connected',
-          description: 'Successfully connected to Make It Real\'s AI backend',
-          color: 'green'
-        })
-      }
+      const toast = useToast()
+      toast.add({
+        title: 'Backend Connected',
+        description: 'Successfully connected to Make It Real\'s AI backend',
+        color: 'green'
+      })
       
       return true
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       backendConfig.value.connected = false
       
-      const toast = useToast?.()
-      if (toast) {
-        toast.add({
-          title: 'Connection Failed',
-          description: `Could not connect to backend: ${errorMessage}`,
-          color: 'red'
-        })
-      }
+      const toast = useToast()
+      toast.add({
+        title: 'Connection Failed',
+        description: `Could not connect to backend: ${errorMessage}`,
+        color: 'red'
+      })
       
       return false
     }
@@ -188,83 +209,71 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const resetSettings = () => {
     backendConfig.value = {
-      baseUrl: 'https://api.makeitrealconsulting.com',
-      accessKey: '',
+      baseUrl: 'http://localhost:8000',
       connected: false
-    }
-
-    userApiKeys.value = {
-      openai: '',
-      anthropic: ''
     }
 
     platformSettings.value = {
       theme: 'system',
-      defaultProvider: 'openai',
+      defaultProvider: 'google',
       autoScroll: true,
       saveHistory: true,
       showTimestamps: true,
+      streamResponses: true,
       maxHistoryLength: 100,
-      streamResponses: true
+      responseTimeout: 30
     }
 
     if (process.client) {
-      localStorage.removeItem('enterpriseAI.backendConfig')
-      localStorage.removeItem('enterpriseAI.userApiKeys')
+      localStorage.removeItem('enterpriseAI.backendUrl')
       localStorage.removeItem('enterpriseAI.platformSettings')
     }
   }
 
   // Helper functions
-  const getProviderDisplayName = (provider: ProviderType): string => {
-    const names = {
-      openai: 'OpenAI GPT',
-      anthropic: 'Anthropic Claude'
-    }
-    return names[provider]
-  }
-
-  const getProviderIcon = (provider: ProviderType): string => {
-    const icons = {
+  const getProviderIcon = (provider: string): string => {
+    const icons: Record<string, string> = {
       openai: 'i-heroicons-cpu-chip',
-      anthropic: 'i-heroicons-sparkles'
+      anthropic: 'i-heroicons-sparkles',
+      google: 'i-heroicons-beaker',
+      bedrock: 'i-heroicons-cloud',
+      ollama: 'i-heroicons-server'
     }
-    return icons[provider]
+    return icons[provider] || 'i-heroicons-cpu-chip'
   }
 
-  const getProviderColor = (provider: ProviderType): string => {
-    const colors = {
+  const getProviderColor = (provider: string): string => {
+    const colors: Record<string, string> = {
       openai: 'blue',
-      anthropic: 'orange'
+      anthropic: 'orange',
+      google: 'green',
+      bedrock: 'purple',
+      ollama: 'gray'
     }
-    return colors[provider]
+    return colors[provider] || 'gray'
   }
 
   return {
     // State
     backendConfig: readonly(backendConfig),
-    userApiKeys: readonly(userApiKeys),
     platformSettings: readonly(platformSettings),
     isLoading: readonly(isLoading),
     lastSaved: readonly(lastSaved),
     
     // Getters
-    enabledProviders,
-    hasValidConfiguration,
     availableProviders,
+    hasValidConfiguration,
+    currentProvider,
     
     // Actions
     loadSettings,
     saveSettings,
     updateBackendConfig,
-    updateUserApiKeys,
     updatePlatformSettings,
-    testBackendConnection,
+    initializeSettings,
     resetSettings,
-    apiRequest,
     
     // Helper functions
-    getProviderDisplayName,
     getProviderIcon,
     getProviderColor
   }

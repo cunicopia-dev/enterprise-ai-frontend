@@ -6,7 +6,7 @@
         <UIcon name="i-heroicons-sparkles" class="h-8 w-8 text-white" />
       </div>
       <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-        Get Your <span class="text-primary-600">Free AI Consultation</span>
+        Try Our <span class="text-primary-600">AI Consultation Bot</span> For Free!
       </h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-6">
         Experience our expertise firsthand with an AI consultant trained on Make It Real's cloud and AI best practices. 
