@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 || MIR || Simplicity is the ultimate sophistication.
+
+Resources:
+  MainBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: makeitrealconsulting-chat
+
+  CICDBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: makeitrealconsulting-chat-cicd
+
+  StaticAssetsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: makeitrealconsulting-chat-static-assets
+
+Outputs:
+  MainBucket:
+    Description: The main bucket for makeitrealconsulting
+    Value: !Ref MainBucket
+    Export:
+      Name: mir-chat-s3-MainBucket
+
+  CICDBucket:
+    Description: The bucket for CI/CD for makeitrealconsulting
+    Value: !Ref CICDBucket
+    Export:
+      Name: mir-chat-s3-CICDBucket
+
+  StaticAssetsBucket:
+    Description: The bucket for static assets for makeitrealconsulting
+    Value: !Ref StaticAssetsBucket
+    Export:
+      Name: mir-chat-s3-StaticAssetsBucket
+

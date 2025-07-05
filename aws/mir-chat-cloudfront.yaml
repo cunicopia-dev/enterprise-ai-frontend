@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFront Distribution with WAF for makeitrealconsulting Chat Web App
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+    Description: The environment to deploy to.
+  CachePolicyId:
+    Type: String
+    Default: 658327ea-f89d-4fab-a63d-7e88639e58f6
+    Description: The ID of the cache policy to use for the CloudFront distribution
+  CloudFrontHostedZoneId:
+    Type: String
+    Default: Z2FDTNDATAQYW2
+    Description: The CloudFront hosted zone ID
+
+Mappings:
+  EnvConfig:
+    dev:
+      DomainName: chat.makeitrealconsulting.com
+      S3Origin: makeitrealconsulting-chat.s3.us-east-1.amazonaws.com
+      S3BucketName: makeitrealconsulting-chat
+      S3BucketPath: arn:aws:s3:::makeitrealconsulting-chat/*
+      CertificateArn: mir-acm-CertificateArn
+      HostedZoneId: Z05001703FDEVNYOVV54B
+    prod:
+      DomainName: chat.makeitrealconsulting.com
+      S3Origin: makeitrealconsulting-chat.s3.us-east-1.amazonaws.com
+      S3BucketName: makeitrealconsulting-chat
+      S3BucketPath: arn:aws:s3:::makeitrealconsulting-chat/*
+      CertificateArn: mir-acm-CertificateArn
+      HostedZoneId: Z05001703FDEVNYOVV54B
+
+Resources:
+  # WebACL:
+  #   Type: AWS::WAFv2::WebACL
+  #   Properties:
+  #     Name: !Sub makeitreal-web-waf-${Environment}
+  #     Description: WAF for CloudFront Distribution
+  #     Scope: CLOUDFRONT
+  #     DefaultAction:
+  #       Allow: {}
+  #     Rules:
+  #       - Name: AWSManagedRulesCommonRuleSet
+  #         Priority: 1
+  #         OverrideAction:
+  #           None: {}
+  #         Statement:
+  #           ManagedRuleGroupStatement:
+  #             VendorName: AWS
+  #             Name: AWSManagedRulesCommonRuleSet
+  #         VisibilityConfig:
+  #           SampledRequestsEnabled: true
+  #           CloudWatchMetricsEnabled: true
+  #           MetricName: AWSManagedRulesCommonRuleSetMetric
+  #     VisibilityConfig:
+  #       SampledRequestsEnabled: true
+  #       CloudWatchMetricsEnabled: true
+  #       MetricName: !Sub makeitreal-web-waf-${Environment}-metric
+
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub makeitreal-chat-web-oac-${Environment}
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        PriceClass: PriceClass_100  # North America and Europe only
+        HttpVersion: http2and3
+        DefaultRootObject: index.html
+        Aliases: 
+          - !FindInMap [EnvConfig, !Ref Environment, DomainName]
+        ViewerCertificate:
+          AcmCertificateArn: !ImportValue
+            Fn::FindInMap: [EnvConfig, !Ref Environment, CertificateArn]
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
+        Origins:
+          - Id: S3Origin
+            DomainName: !FindInMap [EnvConfig, !Ref Environment, S3Origin]
+            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          CachePolicyId: !Ref CachePolicyId
+          Compress: true
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: blacklist
+            Locations:
+              - CN  # China
+              - RU  # Russia
+              - KP  # North Korea
+              - IR  # Iran
+        # WebACLId: !GetAtt WebACL.Arn
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !FindInMap [EnvConfig, !Ref Environment, S3BucketName]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipal
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !FindInMap [EnvConfig, !Ref Environment, S3BucketPath]
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}
+
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !FindInMap [EnvConfig, !Ref Environment, HostedZoneId]
+      Name: !FindInMap [EnvConfig, !Ref Environment, DomainName]
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: !Ref CloudFrontHostedZoneId
+        EvaluateTargetHealth: false
+
+Outputs:
+  DistributionId:
+    Description: CloudFront Distribution ID
+    Value: !Ref CloudFrontDistribution
+    Export:
+      Name: !Sub ${AWS::StackName}-DistributionId
+
+  DistributionDomain:
+    Description: CloudFront Distribution Domain Name
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub ${AWS::StackName}-DistributionDomain
+
+  # WebACLArn:
+  #   Description: WAF Web ACL ARN
+  #   Value: !GetAtt WebACL.Arn
+  #   Export:
+  #     Name: !Sub ${AWS::StackName}-WebACLArn
