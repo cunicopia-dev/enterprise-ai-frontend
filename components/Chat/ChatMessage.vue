@@ -32,31 +32,33 @@
       >
         <!-- Avatar for Assistant -->
         <div v-if="message.role === 'assistant'" class="flex-shrink-0">
-          <div class="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
-            <UIcon
-              v-if="isLoading"
-              name="i-heroicons-ellipsis-horizontal"
-              class="h-3 w-3 text-white animate-pulse"
-            />
-            <UIcon
-              v-else
-              name="i-heroicons-sparkles"
-              class="h-3 w-3 text-white"
-            />
+          <div class="relative w-8 h-8">
+            <div v-if="isLoading" class="absolute inset-0 bg-gradient-to-br from-primary-400 to-blue-500 rounded-lg animate-pulse"></div>
+            <div class="relative w-full h-full bg-gradient-to-br from-primary-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
+              <UIcon
+                v-if="isLoading"
+                name="i-heroicons-ellipsis-horizontal"
+                class="h-4 w-4 text-white animate-pulse"
+              />
+              <UIcon
+                v-else
+                name="i-heroicons-sparkles"
+                class="h-4 w-4 text-white"
+              />
+            </div>
           </div>
         </div>
 
         <!-- Message Content -->
         <div class="flex-1" :class="message.role === 'user' ? 'max-w-md' : ''">
           <!-- Assistant Header (only for assistant messages) -->
-          <div v-if="message.role === 'assistant' && (message.provider || message.metadata?.error)" class="flex items-center gap-1 mb-1">
-            <UBadge
-              v-if="message.provider && !isLoading"
-              :label="getProviderLabel(message.provider)"
-              :color="getProviderColor(message.provider)"
-              variant="soft"
-              size="xs"
-            />
+          <div v-if="message.role === 'assistant' && (message.provider || message.metadata?.error)" class="flex items-center gap-2 mb-2">
+            <div v-if="message.provider && !isLoading" class="flex items-center gap-1">
+              <div class="w-1.5 h-1.5 rounded-full" :class="`bg-${getProviderColor(message.provider)}-500`"></div>
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                {{ getProviderLabel(message.provider) }}
+              </span>
+            </div>
             <UBadge
               v-if="message.metadata?.error"
               label="Error"
@@ -68,28 +70,36 @@
 
           <!-- User Message Bubble OR Assistant Plain Text -->
           <div v-if="message.role === 'user'" 
-               class="bg-primary-600 text-white px-4 py-2 rounded-2xl rounded-br-md">
-            <div class="text-sm leading-relaxed">
-              {{ message.content }}
-            </div>
-            <div class="mt-1 text-xs opacity-70 text-primary-200">
-              {{ formatTime(message.timestamp) }}
+               class="relative bg-gradient-to-br from-primary-600 to-blue-700 text-white px-5 py-3 rounded-2xl rounded-br-md shadow-lg backdrop-blur-sm">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-blue-600/20 rounded-2xl rounded-br-md"></div>
+            <div class="relative">
+              <div class="text-sm leading-relaxed font-medium">
+                {{ message.content }}
+              </div>
+              <div class="mt-2 text-xs opacity-75 text-primary-100">
+                {{ formatTime(message.timestamp) }}
+              </div>
             </div>
           </div>
           
-          <div v-else class="text-gray-900 dark:text-gray-100">
-            <!-- Assistant Message Content (no bubble) -->
-            <div class="text-sm leading-relaxed">
+          <div v-else class="bg-gray-50/50 dark:bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 dark:border-gray-700/50">
+            <!-- Assistant Message Content -->
+            <div class="text-sm leading-relaxed text-gray-900 dark:text-gray-100">
               <div
                 v-if="isLoading"
-                class="flex items-center gap-2"
+                class="flex items-center gap-3"
               >
-                <UIcon name="i-heroicons-ellipsis-horizontal" class="h-4 w-4 text-gray-400 animate-pulse" />
-                <span class="text-gray-500">{{ message.content }}</span>
+                <div class="flex space-x-1">
+                  <div class="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
+                  <div class="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                  <div class="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                </div>
+                <span class="text-gray-600 dark:text-gray-400 font-medium">{{ message.content }}</span>
               </div>
               <div
                 v-else
                 v-html="formatMessageContent(message.content)"
+                class="prose prose-sm dark:prose-invert max-w-none"
               />
             </div>
 
@@ -124,7 +134,7 @@
             </div>
 
             <!-- Timestamp -->
-            <div v-if="!isLoading" class="mt-1 text-xs opacity-60 text-gray-500 dark:text-gray-400">
+            <div v-if="!isLoading" class="mt-3 text-xs opacity-60 text-gray-500 dark:text-gray-400 font-medium">
               {{ formatTime(message.timestamp) }}
             </div>
           </div>
@@ -132,8 +142,11 @@
 
         <!-- Avatar for User -->
         <div v-if="message.role === 'user'" class="flex-shrink-0">
-          <div class="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center">
-            <UIcon name="i-heroicons-user" class="h-3 w-3 text-white" />
+          <div class="relative w-8 h-8">
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg"></div>
+            <div class="relative w-full h-full bg-gradient-to-br from-gray-500 to-gray-700 rounded-lg flex items-center justify-center shadow-lg">
+              <UIcon name="i-heroicons-user" class="h-4 w-4 text-white" />
+            </div>
           </div>
         </div>
       </div>
@@ -144,7 +157,7 @@
 <script setup lang="ts">
 import type { Message } from '~/types/api'
 
-const props = defineProps<{
+defineProps<{
   message: Message
   isLoading?: boolean
 }>()

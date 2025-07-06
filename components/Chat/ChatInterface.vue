@@ -1,31 +1,45 @@
 <template>
-  <div class="flex h-[calc(100vh-240px)] flex-col bg-white dark:bg-gray-950">
+  <div class="flex h-[calc(100vh-240px)] flex-col bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-950 dark:to-blue-950/30 relative overflow-hidden">
+    <!-- Subtle animated background -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-24 -right-24 w-32 h-32 bg-gradient-to-br from-primary-200/5 to-blue-200/5 dark:from-primary-800/5 dark:to-blue-800/5 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute -bottom-24 -left-24 w-32 h-32 bg-gradient-to-br from-blue-200/5 to-purple-200/5 dark:from-blue-800/5 dark:to-purple-800/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 3s;"></div>
+    </div>
+    
     <!-- Chat Header -->
-    <div class="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 py-3">
+    <div class="relative z-10 border-b border-gray-200/50 dark:border-gray-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm px-6 py-4">
       <div class="flex items-center justify-between w-full">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-            <UIcon name="i-heroicons-sparkles" class="h-4 w-4 text-white" />
+        <div class="flex items-center gap-4">
+          <div class="relative w-10 h-10">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-500 to-blue-600 rounded-xl animate-pulse"></div>
+            <div class="relative w-full h-full bg-gradient-to-br from-primary-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+              <UIcon name="i-heroicons-sparkles" class="h-5 w-5 text-white" />
+            </div>
           </div>
           <div>
-            <h1 class="text-base font-medium text-gray-900 dark:text-white">Enterprise AI Chat</h1>
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Enterprise AI Console</h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Multi-Provider Intelligence</p>
           </div>
         </div>
         
-        <div class="flex items-center gap-2">
-          <UBadge 
-            :color="isConnected ? 'green' : 'red'" 
-            variant="soft"
-            :label="isConnected ? 'Connected' : 'Disconnected'"
-            size="xs"
-          />
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <div class="w-2 h-2 rounded-full" :class="isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'"></div>
+              <div v-if="isConnected" class="absolute inset-0 w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
+            </div>
+            <span class="text-xs font-medium" :class="isConnected ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+              {{ isConnected ? 'ONLINE' : 'OFFLINE' }}
+            </span>
+          </div>
           <UButton 
             icon="i-heroicons-arrow-path" 
             variant="ghost" 
             color="gray" 
-            size="xs"
+            size="sm"
             @click="clearChat"
             :disabled="isLoading"
+            class="hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200"
           />
         </div>
       </div>
@@ -53,8 +67,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Message, ChatResponse } from '~/types/api'
-import { useApi, useChat, useProviders } from '~/composables/useApi'
+import type { Message } from '~/types/api'
+import { useApi, useChat } from '~/composables/useApi'
 import { useProviderStore } from '~/stores/providers'
 
 interface AvailableModel {
@@ -68,7 +82,7 @@ const router = useRouter()
 const providerStore = useProviderStore()
 const { isConnected, testConnection } = useApi()
 const { sendMessage, loadChatHistory, isLoading } = useChat()
-const { providers } = useProviders()
+// Removed unused providers destructuring
 
 // Component state
 const messages = ref<Message[]>([])
