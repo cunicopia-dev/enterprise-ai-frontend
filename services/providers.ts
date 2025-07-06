@@ -13,7 +13,7 @@ export interface Provider {
   is_default: boolean
   requires_api_key: boolean
   config: Record<string, any>
-  models: Model[]
+  models: string[]
 }
 
 export interface Model {
@@ -83,39 +83,7 @@ export class ProviderService {
     }
   }
 
-  /**
-   * Check provider health status
-   */
-  async checkProviderHealth(provider: string): Promise<ProviderHealth> {
-    try {
-      const response = await this.apiClient.get<ProviderHealth>(`/providers/${provider}/health`)
-      
-      // Convert timestamp to Date object
-      const health = response.data
-      health.last_check = new Date(health.last_check)
-      
-      return health
-    } catch (error) {
-      ErrorHandler.handle(error, `Failed to check health for ${provider}`)
-    }
-  }
-
-  /**
-   * Check health for all providers
-   */
-  async checkAllProvidersHealth(): Promise<ProviderHealth[]> {
-    try {
-      const response = await this.apiClient.get<{ health_checks: ProviderHealth[] }>('/providers/health')
-      
-      // Convert timestamps to Date objects
-      return response.data.health_checks.map(health => ({
-        ...health,
-        last_check: new Date(health.last_check)
-      }))
-    } catch (error) {
-      ErrorHandler.handle(error, 'Failed to check providers health')
-    }
-  }
+  
 
   /**
    * Get provider configuration
@@ -254,24 +222,16 @@ export class ProviderConfigManager {
  */
 export class ModelSelector {
   private providers: Provider[] = []
-  private healthStatus: Map<string, ProviderHealth> = new Map()
 
   constructor(private providerService: ProviderService) {}
 
   /**
-   * Load providers and health status
+   * Load providers
    */
   async initialize(): Promise<void> {
     try {
-      const [providersResponse, healthChecks] = await Promise.all([
-        this.providerService.getProviders(),
-        this.providerService.checkAllProvidersHealth()
-      ])
-
+      const providersResponse = await this.providerService.getProviders()
       this.providers = providersResponse.providers
-      this.healthStatus = new Map(
-        healthChecks.map(health => [health.provider, health])
-      )
     } catch (error) {
       console.error('Failed to initialize ModelSelector:', error)
     }
@@ -286,12 +246,16 @@ export class ModelSelector {
     for (const provider of this.providers) {
       if (!provider.is_active) continue
 
-      const health = this.healthStatus.get(provider.name)
-      const available = health?.status === 'healthy'
+      const available = provider.is_active
 
-      for (const model of provider.models) {
+      for (const modelName of provider.models) {
         models.push({
-          ...model,
+          model_name: modelName,
+          display_name: modelName, // Use modelName as display_name for now
+          context_window: 0, // Placeholder
+          max_tokens: 0, // Placeholder
+          supports_streaming: false, // Placeholder
+          supports_functions: false, // Placeholder
           provider: provider.name,
           available
         })
@@ -320,13 +284,17 @@ export class ModelSelector {
     for (const provider of this.providers) {
       if (!provider.is_active) continue
 
-      const health = this.healthStatus.get(provider.name)
-      const healthy = health?.status === 'healthy'
+      const healthy = provider.is_active // Assume healthy if active
 
-      const models = provider.models.map(model => ({
-        ...model,
-        value: `${provider.name}:${model.model_name}`,
-        label: model.display_name
+      const models = provider.models.map(modelName => ({
+        model_name: modelName,
+        display_name: modelName,
+        context_window: 0, // Placeholder
+        max_tokens: 0, // Placeholder
+        supports_streaming: false, // Placeholder
+        supports_functions: false, // Placeholder
+        value: `${provider.name}:${modelName}`,
+        label: modelName
       }))
 
       groups.push({
@@ -388,7 +356,18 @@ export class ModelSelector {
     const providerObj = this.providers.find(p => p.name === provider)
     if (!providerObj) return null
 
-    return providerObj.models.find(m => m.model_name === modelName) || null
+    const foundModel = providerObj.models.find(m => m === modelName)
+    if (foundModel) {
+      return {
+        model_name: foundModel,
+        display_name: foundModel,
+        context_window: 0, // Placeholder
+        max_tokens: 0, // Placeholder
+        supports_streaming: false, // Placeholder
+        supports_functions: false // Placeholder
+      }
+    }
+    return null
   }
 
   /**
