@@ -276,8 +276,6 @@ export const useProviders = () => {
 
     try {
       const response = await providerService.value.getProviders()
-      console.log('Raw providers response in useApi:', response)
-      console.log('Providers data in useApi:', response.providers)
       providers.value = response.providers || []
       return response
     } catch (err) {
