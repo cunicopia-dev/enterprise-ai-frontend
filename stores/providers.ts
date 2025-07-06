@@ -1,20 +1,6 @@
 import { defineStore } from 'pinia'
 
-interface Model {
-  model_name: string
-  display_name: string
-  description?: string
-  context_window?: number
-  max_tokens?: number
-}
-
-interface Provider {
-  name: string
-  display_name: string
-  is_active: boolean
-  is_default: boolean
-  models?: Model[]
-}
+import type { Provider, Model } from '~/services/providers'
 
 interface ProviderState {
   providers: Provider[]
@@ -40,49 +26,24 @@ export const useProviderStore = defineStore('providers', {
     selectedProvider: (state) => state.providers.find((p) => p.name === state.currentProvider),
     availableModels: (state) => {
       const provider = state.providers.find((p) => p.name === state.currentProvider)
-      return provider?.models || []
+      if (!provider) return []
+      return provider.models.map(modelName => ({
+        label: modelName,
+        value: `${provider.name}:${modelName}`,
+        provider: provider.name
+      }))
     },
   },
 
   actions: {
     async loadProviders() {
+      if (this.providers.length > 0) return
       this.isLoading = true
       this.error = null
       try {
-        // TODO: Implement API call to load providers
-        console.log('Loading providers...')
-        
-        // Mock data
-        this.providers = [
-          {
-            name: 'ollama',
-            display_name: 'Ollama',
-            is_active: true,
-            is_default: true,
-            models: [
-              {
-                model_name: 'llama3.1:8b-instruct-q8_0',
-                display_name: 'Llama 3.1 8B',
-                context_window: 8192,
-                max_tokens: 4096,
-              },
-            ],
-          },
-          {
-            name: 'anthropic',
-            display_name: 'Anthropic',
-            is_active: true,
-            is_default: false,
-            models: [
-              {
-                model_name: 'claude-3-opus-20240229',
-                display_name: 'Claude 3 Opus',
-                context_window: 200000,
-                max_tokens: 4096,
-              },
-            ],
-          },
-        ]
+        const { providerService } = useApi()
+        const response = await providerService.value.getProviders()
+        this.providers = response.providers
       } catch (error) {
         this.error = 'Failed to load providers'
         console.error('Load providers error:', error)
@@ -109,7 +70,7 @@ export const useProviderStore = defineStore('providers', {
       this.currentProvider = provider
       const providerData = this.providers.find((p) => p.name === provider)
       if (providerData?.models?.length) {
-        this.currentModel = providerData.models[0].model_name
+        this.currentModel = providerData.models[0]
       }
     },
 
@@ -129,8 +90,4 @@ export const useProviderStore = defineStore('providers', {
     },
   },
 
-  persist: {
-    storage: persistedState.localStorage,
-    paths: ['currentProvider', 'currentModel'],
-  },
-})
+  })
