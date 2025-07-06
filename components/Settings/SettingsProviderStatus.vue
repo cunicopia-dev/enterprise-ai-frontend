@@ -7,9 +7,9 @@
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">AI Provider Status</h2>
         </div>
         <UBadge 
-          :color="overallHealthy ? 'green' : 'orange'" 
+          :color="overallActive ? 'green' : 'orange'" 
           variant="soft"
-          :label="overallHealthy ? 'All Systems Ready' : 'Check Providers'"
+          :label="overallActive ? 'All Providers Active' : 'Check Providers'"
         />
       </div>
     </template>
@@ -56,13 +56,6 @@
               :label="provider.is_active ? 'Active' : 'Inactive'"
               size="xs"
             />
-            <UBadge 
-              v-if="getProviderHealth(provider.name)"
-              :color="getProviderHealth(provider.name).status === 'healthy' ? 'green' : 'red'"
-              variant="soft"
-              :label="getProviderHealth(provider.name).status === 'healthy' ? 'Healthy' : 'Unhealthy'"
-              size="xs"
-            />
           </div>
           <p class="text-xs mt-2" :class="getProviderTextClasses(provider, true)">
             {{ provider.models?.length || 0 }} models available
@@ -97,27 +90,14 @@
 
 <script setup lang="ts">
 // Use our providers composable
-const { providers, providerHealth, isLoading, loadProviders, checkProviderHealth } = useProviders()
+const { providers, isLoading, loadProviders } = useProviders()
 
 // Computed properties
-const overallHealthy = computed(() => {
+const overallActive = computed(() => {
   if (!providers.value.length) return false
   
-  const activeProviders = providers.value.filter(p => p.is_active)
-  if (!activeProviders.length) return false
-  
-  return activeProviders.every(provider => {
-    const health = getProviderHealth(provider.name)
-    return health?.status === 'healthy'
-  })
+  return providers.value.every(p => p.is_active)
 })
-
-/**
- * Get provider health info
- */
-const getProviderHealth = (providerName: string) => {
-  return providerHealth.value[providerName] || null
-}
 
 /**
  * Get provider icon
@@ -141,14 +121,7 @@ const getProviderCardClasses = (provider: any): string => {
     return 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
   }
   
-  const health = getProviderHealth(provider.name)
-  if (health?.status === 'healthy') {
-    return 'bg-green-50 dark:bg-green-950/50 border-green-200 dark:border-green-800'
-  } else if (health?.status === 'unhealthy') {
-    return 'bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800'
-  }
-  
-  return 'bg-yellow-50 dark:bg-yellow-950/50 border-yellow-200 dark:border-yellow-800'
+  return 'bg-green-50 dark:bg-green-950/50 border-green-200 dark:border-green-800'
 }
 
 /**
@@ -159,14 +132,7 @@ const getProviderIconClasses = (provider: any): string => {
     return 'bg-gray-600'
   }
   
-  const health = getProviderHealth(provider.name)
-  if (health?.status === 'healthy') {
-    return 'bg-green-600'
-  } else if (health?.status === 'unhealthy') {
-    return 'bg-red-600'
-  }
-  
-  return 'bg-yellow-600'
+  return 'bg-green-600'
 }
 
 /**
@@ -179,23 +145,15 @@ const getProviderTextClasses = (provider: any, small = false): string => {
     return `${baseClasses} text-gray-600 dark:text-gray-400`
   }
   
-  const health = getProviderHealth(provider.name)
-  if (health?.status === 'healthy') {
-    return `${baseClasses} text-green-800 dark:text-green-200`
-  } else if (health?.status === 'unhealthy') {
-    return `${baseClasses} text-red-800 dark:text-red-200`
-  }
-  
-  return `${baseClasses} text-yellow-800 dark:text-yellow-200`
+  return `${baseClasses} text-green-800 dark:text-green-200`
 }
 
 /**
- * Refresh providers and health status
+ * Refresh providers
  */
 const refreshProviders = async () => {
   try {
     await loadProviders()
-    await checkProviderHealth()
   } catch (error) {
     console.error('Failed to refresh providers:', error)
   }
