@@ -63,13 +63,16 @@ interface AvailableModel {
   provider: string
 }
 
+import { useProviderStore } from '~/stores/providers'
+
 const props = defineProps<{
   chatId?: string
 }>()
 
 // Composables
 const { sendMessage, loadChatHistory, isLoading, error, currentChatId } = useChat()
-const { providers, loadProviders, checkProviderHealth, isLoading: providersLoading } = useProviders()
+const providerStore = useProviderStore()
+const { providers } = storeToRefs(providerStore)
 const { isConnected, testConnection } = useApi()
 
 // State
@@ -85,16 +88,13 @@ onMounted(async () => {
     await testConnection()
     
     // Load providers and set up models
-    await loadProviders()
+    await providerStore.loadProviders()
     setupAvailableModels()
     
     // Load existing chat if chatId provided
     if (props.chatId) {
       await loadExistingChat(props.chatId)
     }
-    
-    // Check provider health
-    await checkProviderHealth()
   } catch (error) {
     console.error('Failed to initialize chat:', error)
   }
@@ -110,10 +110,10 @@ const setupAvailableModels = () => {
   for (const provider of providers.value) {
     if (!provider.is_active) continue
     
-    for (const model of provider.models || []) {
+    for (const modelName of provider.models || []) {
       models.push({
-        label: `${model.display_name} (${provider.display_name})`,
-        value: `${provider.name}:${model.model_name}`,
+        label: modelName,
+        value: `${provider.name}:${modelName}`,
         provider: provider.name
       })
     }
@@ -156,7 +156,7 @@ const handleSendMessage = async (content: string) => {
   if (!content.trim() || !selectedModel.value) return
   
   // Parse model selection
-  const [provider, model] = selectedModel.value.value.split(':')
+  const [provider, modelName] = selectedModel.value.value.split(':')
   
   // Add user message immediately
   const userMessage: Message = {
@@ -173,7 +173,7 @@ const handleSendMessage = async (content: string) => {
     const response = await sendMessage(content, {
       chatId: props.chatId || currentChatId.value || undefined,
       provider,
-      model,
+      model: modelName, // Send only the model name
       temperature: 0.7,
       maxTokens: 2048
     })
