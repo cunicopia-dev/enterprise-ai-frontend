@@ -1,124 +1,141 @@
 <template>
-  <div 
-    class="flex gap-4"
-    :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
-  >
-    <!-- Avatar -->
-    <div v-if="message.role === 'assistant'" class="flex-shrink-0">
-      <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-        <UIcon 
-          v-if="isLoading"
-          name="i-heroicons-ellipsis-horizontal" 
-          class="h-5 w-5 text-white animate-pulse" 
-        />
-        <UIcon 
-          v-else
-          name="i-heroicons-sparkles" 
-          class="h-5 w-5 text-white" 
-        />
+  <!-- System Message (collapsed/expandable) -->
+  <div v-if="message.role === 'system'" class="flex justify-center mb-2">
+    <div class="w-full max-w-4xl">
+      <div class="flex justify-center">
+        <div 
+          class="text-xs text-gray-400 dark:text-gray-600 italic cursor-pointer hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
+          @click="toggleSystemMessage"
+        >
+          <div class="flex items-center gap-1">
+            <UIcon 
+              :name="isSystemExpanded ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-right'" 
+              class="h-3 w-3" 
+            />
+            <span v-if="!isSystemExpanded">System prompt...</span>
+            <span v-else>System prompt</span>
+          </div>
+          <div v-if="isSystemExpanded" class="mt-1 max-w-md text-left bg-gray-50 dark:bg-gray-900 p-2 rounded border text-gray-600 dark:text-gray-400">
+            {{ message.content }}
+          </div>
+        </div>
       </div>
     </div>
-    
-    <!-- Message Bubble -->
-    <UCard 
-      class="max-w-lg lg:max-w-2xl"
-      :class="[
-        message.role === 'user' 
-          ? 'bg-primary-600 text-white border-primary-600' 
-          : 'bg-white dark:bg-gray-800',
-        message.metadata?.error ? 'border-red-200 dark:border-red-800' : ''
-      ]"
-    >
-      <div class="p-4">
-        <!-- Assistant Header -->
-        <div v-if="message.role === 'assistant'" class="flex items-center gap-2 mb-2">
-          <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
-            {{ isLoading ? 'AI Assistant' : 'AI Assistant' }}
-          </span>
-          <UBadge 
-            v-if="message.provider && !isLoading"
-            :label="getProviderLabel(message.provider)" 
-            :color="getProviderColor(message.provider)" 
-            variant="soft" 
-            size="xs"
-          />
-          <UBadge 
-            v-if="message.metadata?.error"
-            label="Error" 
-            color="red" 
-            variant="soft" 
-            size="xs"
-          />
-        </div>
-        
-        <!-- Message Content -->
-        <div class="prose prose-sm max-w-none">
-          <div 
-            v-if="isLoading"
-            class="flex items-center gap-2"
-          >
-            <UIcon name="i-heroicons-ellipsis-horizontal" class="h-5 w-5 text-gray-400 animate-pulse" />
-            <span class="text-sm text-gray-500">{{ message.content }}</span>
+  </div>
+
+  <!-- Regular Messages -->
+  <div v-else class="flex justify-center">
+    <div class="w-full max-w-4xl">
+      <div
+        class="flex gap-3"
+        :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
+      >
+        <!-- Avatar for Assistant -->
+        <div v-if="message.role === 'assistant'" class="flex-shrink-0">
+          <div class="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
+            <UIcon
+              v-if="isLoading"
+              name="i-heroicons-ellipsis-horizontal"
+              class="h-3 w-3 text-white animate-pulse"
+            />
+            <UIcon
+              v-else
+              name="i-heroicons-sparkles"
+              class="h-3 w-3 text-white"
+            />
           </div>
-          <div
-            v-else
-            :class="message.role === 'user' ? 'text-white' : 'text-gray-900 dark:text-gray-100'"
-            v-html="formatMessageContent(message.content)"
-          />
         </div>
-        
-        <!-- Tool Executions -->
-        <div v-if="message.metadata?.tool_executions?.length" class="mt-3 p-3 bg-blue-50 dark:bg-blue-950/50 rounded-lg border border-blue-200 dark:border-blue-800">
-          <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
-            <UIcon name="i-heroicons-wrench-screwdriver" class="h-4 w-4" />
-            Tool Executions
-          </h4>
-          <div class="space-y-2">
-            <div 
-              v-for="execution in message.metadata.tool_executions" 
-              :key="execution.tool_name"
-              class="text-sm"
-            >
-              <div class="flex items-center gap-2">
-                <UBadge 
-                  :label="execution.tool_name" 
-                  :color="execution.success ? 'green' : 'red'" 
-                  variant="soft" 
-                  size="xs"
-                />
-                <span class="text-gray-600 dark:text-gray-400">
-                  {{ execution.execution_time }}ms
-                </span>
+
+        <!-- Message Content -->
+        <div class="flex-1" :class="message.role === 'user' ? 'max-w-md' : ''">
+          <!-- Assistant Header (only for assistant messages) -->
+          <div v-if="message.role === 'assistant' && (message.provider || message.metadata?.error)" class="flex items-center gap-1 mb-1">
+            <UBadge
+              v-if="message.provider && !isLoading"
+              :label="getProviderLabel(message.provider)"
+              :color="getProviderColor(message.provider)"
+              variant="soft"
+              size="xs"
+            />
+            <UBadge
+              v-if="message.metadata?.error"
+              label="Error"
+              color="red"
+              variant="soft"
+              size="xs"
+            />
+          </div>
+
+          <!-- User Message Bubble OR Assistant Plain Text -->
+          <div v-if="message.role === 'user'" 
+               class="bg-primary-600 text-white px-4 py-2 rounded-2xl rounded-br-md">
+            <div class="text-sm leading-relaxed">
+              {{ message.content }}
+            </div>
+            <div class="mt-1 text-xs opacity-70 text-primary-200">
+              {{ formatTime(message.timestamp) }}
+            </div>
+          </div>
+          
+          <div v-else class="text-gray-900 dark:text-gray-100">
+            <!-- Assistant Message Content (no bubble) -->
+            <div class="text-sm leading-relaxed">
+              <div
+                v-if="isLoading"
+                class="flex items-center gap-2"
+              >
+                <UIcon name="i-heroicons-ellipsis-horizontal" class="h-4 w-4 text-gray-400 animate-pulse" />
+                <span class="text-gray-500">{{ message.content }}</span>
               </div>
-              <div v-if="execution.result" class="mt-1 text-xs text-gray-600 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                {{ typeof execution.result === 'string' ? execution.result : JSON.stringify(execution.result, null, 2) }}
+              <div
+                v-else
+                v-html="formatMessageContent(message.content)"
+              />
+            </div>
+
+            <!-- Tool Executions -->
+            <div v-if="message.metadata?.tool_executions?.length" class="mt-3 p-3 bg-blue-50 dark:bg-blue-950/50 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                <UIcon name="i-heroicons-wrench-screwdriver" class="h-4 w-4" />
+                Tool Executions
+              </h4>
+              <div class="space-y-2">
+                <div
+                  v-for="execution in message.metadata.tool_executions"
+                  :key="execution.tool_name"
+                  class="text-sm"
+                >
+                  <div class="flex items-center gap-2">
+                    <UBadge
+                      :label="execution.tool_name"
+                      :color="execution.success ? 'green' : 'red'"
+                      variant="soft"
+                      size="xs"
+                    />
+                    <span class="text-gray-600 dark:text-gray-400">
+                      {{ execution.execution_time }}ms
+                    </span>
+                  </div>
+                  <div v-if="execution.result" class="mt-1 text-xs text-gray-600 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                    {{ typeof execution.result === 'string' ? execution.result : JSON.stringify(execution.result, null, 2) }}
+                  </div>
+                </div>
               </div>
+            </div>
+
+            <!-- Timestamp -->
+            <div v-if="!isLoading" class="mt-1 text-xs opacity-60 text-gray-500 dark:text-gray-400">
+              {{ formatTime(message.timestamp) }}
             </div>
           </div>
         </div>
-        
-        <!-- Usage Info -->
-        <div v-if="message.metadata?.usage && !isLoading" class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-4">
-          <span>{{ formatTime(message.timestamp) }}</span>
-          <span v-if="message.metadata.usage.total_tokens">
-            {{ message.metadata.usage.total_tokens }} tokens
-          </span>
-          <span v-if="message.model">
-            {{ message.model }}
-          </span>
+
+        <!-- Avatar for User -->
+        <div v-if="message.role === 'user'" class="flex-shrink-0">
+          <div class="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center">
+            <UIcon name="i-heroicons-user" class="h-3 w-3 text-white" />
+          </div>
         </div>
-        
-        <!-- Simple Timestamp -->
-        <div v-else-if="!isLoading" class="mt-2 text-xs opacity-70">
-          {{ formatTime(message.timestamp) }}
-        </div>
-      </div>
-    </UCard>
-    
-    <!-- User Avatar -->
-    <div v-if="message.role === 'user'" class="flex-shrink-0">
-      <div class="w-8 h-8 bg-gray-400 rounded-lg flex items-center justify-center">
-        <UIcon name="i-heroicons-user" class="h-5 w-5 text-white" />
       </div>
     </div>
   </div>
@@ -131,6 +148,13 @@ const props = defineProps<{
   message: Message
   isLoading?: boolean
 }>()
+
+// System message expansion state
+const isSystemExpanded = ref(false)
+
+const toggleSystemMessage = () => {
+  isSystemExpanded.value = !isSystemExpanded.value
+}
 
 /**
  * Format message timestamp
@@ -174,22 +198,33 @@ const getProviderColor = (provider: string): string => {
  * Format message content with basic markdown support
  */
 const formatMessageContent = (content: string): string => {
-  // Basic markdown formatting
   let formatted = content
+    // Headings (h1-h6)
+    .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
+    .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
+    .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
     // Bold text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     // Italic text
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-primary-500 hover:underline">$1</a>')
     // Code blocks
-    .replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2 mb-2 overflow-x-auto"><code>$1</code></pre>')
+    .replace(/```([a-z]*)\n([\s\S]*?)\n```/g, '<pre class="bg-gray-100 dark:bg-gray-900 p-3 rounded-md mt-2 mb-2 overflow-x-auto text-sm"><code class="language-$1">$2</code></pre>')
     // Inline code
-    .replace(/`(.*?)`/g, '<code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">$1</code>')
+    .replace(/`(.*?)`/g, '<code class="bg-gray-100 dark:bg-gray-900 px-1 py-0.5 rounded text-sm">$1</code>')
+    // Unordered lists
+    .replace(/^- (.*$)/gim, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/s, '<ul class="list-disc list-inside mt-2 mb-2 space-y-1">$1</ul>')
+    // Ordered lists
+    .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/s, '<ol class="list-decimal list-inside mt-2 mb-2 space-y-1">$1</ol>')
     // Line breaks
     .replace(/\n/g, '<br>')
-    // Bullet points
-    .replace(/^• (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/s, '<ul class="list-disc list-inside mt-2 mb-2 space-y-1">$1</ul>')
-  
+
   return formatted
 }
 </script>

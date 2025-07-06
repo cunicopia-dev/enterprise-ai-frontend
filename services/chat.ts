@@ -65,10 +65,11 @@ export interface ChatHistory {
 }
 
 export interface ChatListResponse {
-  chats: Conversation[]
-  total: number
-  page: number
-  limit: number
+  chats: Record<string, Conversation>
+  success?: boolean
+  total?: number
+  page?: number
+  limit?: number
 }
 
 /**
@@ -102,7 +103,11 @@ export class ChatService {
    */
   async getChatHistory(chatId: string): Promise<ChatHistory> {
     try {
-      const response = await this.apiClient.get<{ history: ChatHistory }>(`/chat/history/${chatId}`)
+      const response = await this.apiClient.get<{ 
+        chat_id: string
+        history: ChatHistory
+        success: boolean 
+      }>(`/chat/history/${chatId}`)
       
       // Convert timestamp strings to Date objects
       const history = response.data.history
@@ -112,6 +117,9 @@ export class ChatService {
         ...msg,
         timestamp: new Date(msg.timestamp)
       }))
+      
+      // Add the chat_id to the history object
+      history.chat_id = chatId
 
       return history
     } catch (error) {
@@ -124,19 +132,24 @@ export class ChatService {
    */
   async getChatList(page = 1, limit = 50): Promise<ChatListResponse> {
     try {
-      const response = await this.apiClient.get<ChatListResponse>('/chat/history', {
-        body: JSON.stringify({ page, limit })
-      })
+      const response = await this.apiClient.get<ChatListResponse>(`/chat/history?page=${page}&limit=${limit}`)
 
-      // Convert timestamp strings to Date objects
+      // Convert timestamp strings to Date objects for each chat
       const chatList = response.data
-      chatList.chats = chatList.chats.map(chat => ({
-        ...chat,
-        created_at: new Date(chat.created_at),
-        updated_at: new Date(chat.updated_at)
-      }))
-
-      return chatList
+      const chatsWithDates: Record<string, Conversation> = {}
+      
+      for (const [chatId, chat] of Object.entries(chatList.chats)) {
+        chatsWithDates[chatId] = {
+          ...chat,
+          created_at: new Date(chat.created_at),
+          updated_at: new Date(chat.updated_at)
+        }
+      }
+      
+      return {
+        ...chatList,
+        chats: chatsWithDates
+      }
     } catch (error) {
       ErrorHandler.handle(error, 'Failed to load chat list')
     }

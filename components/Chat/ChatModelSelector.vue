@@ -1,6 +1,6 @@
 <template>
   <USelect
-    :model-value="modelValue"
+    :model-value="modelValue?.value"
     :items="selectItems"
     placeholder="Choose AI Model"
     size="sm"

@@ -1,17 +1,14 @@
 <template>
-  <div class="flex h-[calc(100vh-240px)] flex-col bg-gray-50 dark:bg-gray-900">
+  <div class="flex h-[calc(100vh-240px)] flex-col bg-white dark:bg-gray-950">
     <!-- Chat Header -->
-    <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4">
-      <div class="flex items-center justify-between">
+    <div class="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 py-3">
+      <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-            <UIcon name="i-heroicons-sparkles" class="h-6 w-6 text-white" />
+          <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+            <UIcon name="i-heroicons-sparkles" class="h-4 w-4 text-white" />
           </div>
           <div>
-            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Enterprise AI Chat</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Powered by Make It Real's AI Platform
-            </p>
+            <h1 class="text-base font-medium text-gray-900 dark:text-white">Enterprise AI Chat</h1>
           </div>
         </div>
         
@@ -20,12 +17,13 @@
             :color="isConnected ? 'green' : 'red'" 
             variant="soft"
             :label="isConnected ? 'Connected' : 'Disconnected'"
+            size="xs"
           />
           <UButton 
             icon="i-heroicons-arrow-path" 
             variant="ghost" 
             color="gray" 
-            size="sm"
+            size="xs"
             @click="clearChat"
             :disabled="isLoading"
           />
@@ -56,6 +54,8 @@
 
 <script setup lang="ts">
 import type { Message, ChatResponse } from '~/types/api'
+import { useApi, useChat, useProviders } from '~/composables/useApi'
+import { useProviderStore } from '~/stores/providers'
 
 interface AvailableModel {
   label: string
@@ -63,23 +63,44 @@ interface AvailableModel {
   provider: string
 }
 
-import { useProviderStore } from '~/stores/providers'
-
-const props = defineProps<{
-  chatId?: string
-}>()
-
-// Composables
-const { sendMessage, loadChatHistory, isLoading, error, currentChatId } = useChat()
+const route = useRoute()
+const router = useRouter()
 const providerStore = useProviderStore()
-const { providers } = storeToRefs(providerStore)
 const { isConnected, testConnection } = useApi()
+const { sendMessage, loadChatHistory, isLoading } = useChat()
+const { providers } = useProviders()
 
-// State
+// Component state
 const messages = ref<Message[]>([])
 const selectedModel = ref<AvailableModel | null>(null)
 const availableModels = ref<AvailableModel[]>([])
-const messagesContainer = ref<HTMLElement>()
+// Current chat ID from route
+const currentRouteChatId = computed(() => route.params.id as string | undefined)
+
+// Setup available models from providers
+const setupAvailableModels = () => {
+  const models: AvailableModel[] = []
+  
+  providerStore.providers.forEach(provider => {
+    if (provider.is_active && provider.models) {
+      // Models are strings from the API
+      provider.models.forEach((model: string) => {
+        models.push({
+          label: `${provider.display_name} - ${model}`,
+          value: `${provider.name}:${model}`,
+          provider: provider.name
+        })
+      })
+    }
+  })
+  
+  availableModels.value = models
+  
+  // Set default model if none selected
+  if (!selectedModel.value && models.length > 0) {
+    selectedModel.value = models[0]
+  }
+}
 
 // Load initial data
 onMounted(async () => {
@@ -91,50 +112,20 @@ onMounted(async () => {
     await providerStore.loadProviders()
     setupAvailableModels()
     
-    // Load existing chat if chatId provided
-    if (props.chatId) {
-      await loadExistingChat(props.chatId)
-    }
+    // Don't load chat here - let the watcher handle it
   } catch (error) {
     console.error('Failed to initialize chat:', error)
   }
 })
 
-/**
- * Set up available models from providers
- */
-const setupAvailableModels = () => {
-  const models: AvailableModel[] = []
-  
-  // Add models based on actual providers from backend
-  for (const provider of providers.value) {
-    if (!provider.is_active) continue
-    
-    for (const modelName of provider.models || []) {
-      models.push({
-        label: modelName,
-        value: `${provider.name}:${modelName}`,
-        provider: provider.name
-      })
-    }
+// Watch for route.params.id changes to load new chat history
+watch(currentRouteChatId, async (newChatId, oldChatId) => {
+  if (newChatId && newChatId !== oldChatId) {
+    await loadExistingChat(newChatId)
+  } else if (!newChatId) {
+    messages.value = [] // Clear messages if no chat ID
   }
-  
-  // Fallback models if no providers loaded yet
-  if (models.length === 0) {
-    models.push(
-      { label: 'GPT-4o (OpenAI)', value: 'openai:gpt-4o', provider: 'openai' },
-      { label: 'Claude 3.5 Haiku (Anthropic)', value: 'anthropic:claude-3.5-haiku', provider: 'anthropic' },
-      { label: 'Gemini 2.5 Flash (Google)', value: 'google:gemini-2.5-flash', provider: 'google' },
-      { label: 'Claude 3.5 Sonnet (Bedrock)', value: 'bedrock:claude-3.5-sonnet', provider: 'bedrock' }
-    )
-  }
-  
-  availableModels.value = models
-  
-  // Set default to Gemini 2.5 Flash if available, otherwise first model
-  const defaultModel = models.find(m => m.value.includes('gemini-2.5-flash')) || models[0]
-  selectedModel.value = defaultModel
-}
+}, { immediate: true })
 
 /**
  * Load existing chat conversation
@@ -146,6 +137,8 @@ const loadExistingChat = async (chatId: string) => {
     scrollToBottom()
   } catch (error) {
     console.error('Failed to load chat history:', error)
+    // If chat not found, navigate back to main chat
+    await router.push('/chat')
   }
 }
 
@@ -171,9 +164,9 @@ const handleSendMessage = async (content: string) => {
   try {
     // Send to backend
     const response = await sendMessage(content, {
-      chatId: props.chatId || currentChatId.value || undefined,
+      chatId: currentRouteChatId.value || undefined,
       provider,
-      model: modelName, // Send only the model name
+      model: modelName,
       temperature: 0.7,
       maxTokens: 2048
     })
@@ -193,6 +186,11 @@ const handleSendMessage = async (content: string) => {
     }
     messages.value.push(assistantMessage)
     scrollToBottom()
+    
+    // If this created a new chat, update the route
+    if (!currentRouteChatId.value && response.chat_id) {
+      await router.push(`/chat/${response.chat_id}`)
+    }
     
   } catch (error) {
     // Add error message
@@ -223,10 +221,11 @@ const handleModelChange = (model: AvailableModel) => {
 }
 
 /**
- * Clear chat messages
+ * Clear chat messages and start new chat
  */
-const clearChat = () => {
+const clearChat = async () => {
   messages.value = []
+  await router.push('/chat')
 }
 
 /**
@@ -234,14 +233,15 @@ const clearChat = () => {
  */
 const scrollToBottom = () => {
   nextTick(() => {
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+    const container = document.querySelector('.message-container')
+    if (container) {
+      container.scrollTop = container.scrollHeight
     }
   })
 }
 
 // Watch for provider changes and update models
-watch(providers, () => {
+watch(() => providerStore.providers, () => {
   setupAvailableModels()
 }, { deep: true })
 

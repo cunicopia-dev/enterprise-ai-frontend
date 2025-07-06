@@ -7,7 +7,7 @@
 
     <!-- Middle Column: Chat Interface -->
     <div class="flex-1 flex flex-col">
-      <ChatInterface class="flex-1" />
+      <ChatInterface :key="route.params.id as string" class="flex-1" />
     </div>
 
     <!-- Right Column: Call to Action Banner -->
@@ -25,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
+
 useHead({
   title: 'Enterprise AI Chat - Make It Real Consulting',
   meta: [

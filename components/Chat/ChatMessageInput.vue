@@ -1,35 +1,28 @@
 <template>
-  <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
-    <div class="mx-auto max-w-4xl">
-      
-      <!-- Model Selector -->
-      <div class="flex items-center gap-3 mb-3">
-        <ChatModelSelector
-          v-model="localSelectedModel"
-          :available-models="availableModels"
-          :disabled="isLoading || !isConnected"
-          @update:model-value="handleModelChange"
-        />
-        <UBadge 
-          v-if="localSelectedModel"
-          :color="getModelColor(localSelectedModel.provider)" 
-          variant="soft" 
-          :label="localSelectedModel.label"
-        />
-      </div>
-      
+  <div class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
+    <div>
       <!-- Input Row -->
-      <div class="flex gap-3">
-        <UTextarea
-          v-model="messageText"
-          placeholder="Ask about cloud architecture, AI implementation, or get consulting advice..."
-          :rows="3"
-          variant="outline"
-          class="flex-1"
-          :disabled="isLoading || !isConnected"
-          @keydown.enter.prevent.exact="handleSend"
-          @keydown.enter.shift.prevent="addNewLine"
-        />
+      <div class="flex items-end gap-3">
+        <div class="flex-1 flex flex-col gap-2">
+          <!-- Model Selector -->
+          <ChatModelSelector
+            v-model="localSelectedModel"
+            :available-models="availableModels"
+            :disabled="isLoading || !isConnected"
+            @update:model-value="handleModelChange"
+            class="w-full"
+          />
+          <UTextarea
+            v-model="messageText"
+            placeholder="Ask about cloud architecture, AI implementation, or get consulting advice..."
+            :rows="3"
+            variant="outline"
+            class="flex-1"
+            :disabled="isLoading || !isConnected"
+            @keydown.enter.prevent.exact="handleSend"
+            @keydown.enter.shift.prevent="addNewLine"
+          />
+        </div>
         
         <UButton
           icon="i-heroicons-paper-airplane"

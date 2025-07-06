@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 overflow-y-auto p-6" ref="messagesContainer">
+  <div class="flex-1 overflow-y-auto p-4 message-container" ref="messagesContainer">
     <!-- Empty State -->
     <div v-if="!messages.length" class="flex h-full items-center justify-center">
       <div class="text-center max-w-md">
@@ -39,7 +39,7 @@
     </div>
     
     <!-- Messages -->
-    <div v-else class="mx-auto max-w-4xl space-y-6">
+    <div v-else class="space-y-4">
       <ChatMessage
         v-for="message in messages"
         :key="message.id"
