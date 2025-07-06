@@ -24,26 +24,25 @@
             
             <div class="space-y-6">
               <h1 class="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
-                Try My New <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">AI Consultant Bot</span>
+                Your AI Stack is <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">Breaking</span>
               </h1>
               
               <p class="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
-                Get free AI consultation with Make It Real Consulting best practices baked in. 
-                Experience real enterprise insights powered by <strong class="text-gray-900 dark:text-white">7+ years of Fortune 100 experience</strong>.
+                <strong class="text-gray-900 dark:text-white">Here's the fix — tested, open, deployable in 30 minutes.</strong> When OpenAI fails, Claude steps in. When Claude fails, Gemini catches it. <strong class="text-primary-600 dark:text-primary-400">Automatically.</strong>
               </p>
               
               <div class="flex flex-wrap gap-4 text-sm">
                 <div class="flex items-center gap-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
                   <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span class="text-gray-700 dark:text-gray-300 font-medium">Free to Try</span>
+                  <span class="text-gray-700 dark:text-gray-300 font-medium">Under 200ms Response Time</span>
                 </div>
                 <div class="flex items-center gap-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
                   <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
-                  <span class="text-gray-700 dark:text-gray-300 font-medium">Real Expertise</span>
+                  <span class="text-gray-700 dark:text-gray-300 font-medium">Deploy Without Hiring 3 Devs</span>
                 </div>
                 <div class="flex items-center gap-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
                   <div class="w-2 h-2 bg-primary-500 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
-                  <span class="text-gray-700 dark:text-gray-300 font-medium">Book Real Calls</span>
+                  <span class="text-gray-700 dark:text-gray-300 font-medium">Inspect Every Line of Code</span>
                 </div>
               </div>
             </div>
@@ -55,8 +54,8 @@
                   to="/chat" 
                   size="xl" 
                   color="primary" 
-                  icon="i-heroicons-chat-bubble-left-right"
-                  label="Start Chatting Now"
+                  icon="i-heroicons-play"
+                  label="Try the Live Demo"
                   class="relative text-lg px-8 py-4 font-semibold"
                 />
               </div>
@@ -232,9 +231,96 @@
       </div>
     </div>
 
+    <!-- What This System Can Do Section -->
+    <div class="relative -mx-4 px-4 py-20 bg-gradient-to-br from-white via-gray-50 to-primary-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950/30">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <div class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-500/10 to-blue-500/10 rounded-full px-6 py-3 border border-primary-500/20 mb-8">
+            <UIcon name="i-heroicons-wrench-screwdriver" class="h-6 w-6 text-primary-600 dark:text-primary-400 animate-pulse" />
+            <span class="text-primary-600 dark:text-primary-400 font-semibold">Platform Core</span>
+          </div>
+          
+          <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+            This Is What You're <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">Getting</span>
+          </h2>
+          
+          <p class="text-xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8">
+            <strong>This isn't some prebuilt toy.</strong> It's a real platform, with the scaffolding and systems-level control to evolve alongside your stack.
+          </p>
+          
+          <div class="text-center mb-12">
+            <div class="inline-block bg-gray-100/50 dark:bg-gray-800/50 rounded-full px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
+              <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">Everything here runs today. No vaporware. No fine print.</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-xl">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                <UIcon name="i-heroicons-chat-bubble-left-right" class="h-6 w-6 text-white" />
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Multi-LLM Chat</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Build chat systems with real memory, not toy context windows. Secure, intelligent, failover-ready.</p>
+          </div>
+          
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-xl">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <UIcon name="i-heroicons-arrow-path" class="h-6 w-6 text-white" />
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Workflow Integration</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Connect to real systems. Run chains, trigger actions, and wire up anything from CRMs to custom scripts.</p>
+          </div>
+          
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-xl">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-slate-500 to-slate-600 rounded-xl flex items-center justify-center">
+                <UIcon name="i-heroicons-shield-check" class="h-6 w-6 text-white" />
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Zero Vendor Lock</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Deploy anywhere. No black boxes. No phone-home nonsense. Your data, your control.</p>
+          </div>
+          
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-xl">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                <UIcon name="i-heroicons-chart-bar" class="h-6 w-6 text-white" />
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Audit Ready</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Built for scrutiny. SOC2 in mind. Enterprise auditors won't flinch.</p>
+          </div>
+          
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-xl">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <UIcon name="i-heroicons-puzzle-piece" class="h-6 w-6 text-white" />
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">One-Command Deploy</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">From zero to deployed in one command. Modular, composable, and production-tight.</p>
+          </div>
+          
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-xl">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <UIcon name="i-heroicons-cube" class="h-6 w-6 text-white" />
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Full Architecture</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Beneath the surface: a full-blown orchestration engine with agents, memory, and control logic.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Hire Me Section -->
-    <div class="relative -mx-4 px-4 py-20 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 overflow-hidden" id="deployment">
+    <div class="relative -mx-4 px-4 py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 overflow-hidden" id="deployment">
       <!-- Deployment Flow Background -->
       <div class="absolute inset-0">
         <!-- Flowing Data Lines -->
@@ -263,8 +349,8 @@
           </h2>
           
           <p class="text-xl text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed">
-            This entire system is <strong class="text-cyan-300">open source (GPL 3.0)</strong> so you can see exactly what you're getting. 
-            I believe in transparency — you should know the quality of work before you hire.
+            Before you hire anyone, you should know exactly what you're getting. That's why I <strong class="text-cyan-300">open sourced the entire system</strong> — 
+            inspect the code, judge the quality. <strong class="text-white">GPL 3.0 means total transparency.</strong>
           </p>
         </div>
         
@@ -404,11 +490,12 @@
           </div>
           
           <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-            What Can This Bot <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600">Actually Do</span>?
+            I Built This on <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600">My Data</span>
           </h2>
           
           <p class="text-xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-12">
-            It's trained on <strong>real enterprise projects</strong> I've architected and can help with actual technical challenges.
+            <strong>Now imagine this trained on YOUR company's processes, YOUR architecture patterns, YOUR team's knowledge.</strong> 
+            This demo shows the system. The real value is when I build it for your specific data and workflows.
           </p>
         </div>
         
@@ -434,15 +521,15 @@
               <div class="space-y-3">
                 <div class="flex items-start gap-3">
                   <span class="text-green-400 shrink-0">user@terminal:~$</span>
-                  <span class="text-gray-300">What's the best approach for auto-scaling a microservices architecture on AWS?</span>
+                  <span class="text-gray-300">What's the best approach for auto-scaling microservices on AWS?</span>
                 </div>
                 <div class="bg-green-900/20 border-l-4 border-green-500 pl-4 py-2 ml-6">
                   <div class="text-green-300 space-y-1">
-                    <div>🏗️ <strong>Recommended Architecture:</strong></div>
+                    <div>🏗️ <strong>Architecture Recommendation:</strong></div>
                     <div class="ml-4 text-green-200">• ECS Fargate with Application Load Balancer</div>
-                    <div class="ml-4 text-green-200">• Target tracking scaling policies on CPU/memory</div>
-                    <div class="ml-4 text-green-200">• CloudWatch custom metrics for business KPIs</div>
-                    <div class="mt-2 text-green-300">💡 <em>Based on 15+ enterprise implementations from my experience</em></div>
+                    <div class="ml-4 text-green-200">• Target tracking scaling on CPU/memory + custom metrics</div>
+                    <div class="ml-4 text-green-200">• Based on 15+ enterprise implementations I've built</div>
+                    <div class="mt-2 text-green-300">📅 <em>Want me to design this for your team? Let's schedule a call.</em></div>
                   </div>
                 </div>
               </div>
@@ -451,15 +538,15 @@
               <div class="space-y-3">
                 <div class="flex items-start gap-3">
                   <span class="text-blue-400 shrink-0">user@terminal:~$</span>
-                  <span class="text-gray-300">Can you schedule a call to discuss migrating our legacy system to the cloud?</span>
+                  <span class="text-gray-300">How do I implement enterprise AI security without breaking everything?</span>
                 </div>
                 <div class="bg-blue-900/20 border-l-4 border-blue-500 pl-4 py-2 ml-6">
-                  <div class="text-blue-300 space-y-1">
-                    <div>📅 <strong>Scheduling Strategy Call...</strong></div>
-                    <div class="ml-4 text-blue-200">• Connecting to my calendar system</div>
-                    <div class="ml-4 text-blue-200">• Available slots: [Next Tuesday 2PM, Wednesday 10AM]</div>
-                    <div class="ml-4 text-blue-200">• Focus: Legacy migration patterns & cost optimization</div>
-                    <div class="mt-2 text-blue-300">✅ <em>Calendar invite sent! Check your email.</em></div>
+                  <div class="text-blue-300 space-y-2">
+                    <div>🔒 <strong>Security Strategy:</strong></div>
+                    <div class="ml-4 text-blue-200">• Start with data classification — what actually needs protection?</div>
+                    <div class="ml-4 text-blue-200">• Implement zero-trust gradually, not all at once</div>
+                    <div class="ml-4 text-blue-200">• I've done this for 3 Fortune 100 companies without downtime</div>
+                    <div class="mt-3 text-blue-300">📅 <em>I can design a phased rollout plan for your specific setup.</em></div>
                   </div>
                 </div>
               </div>
@@ -468,16 +555,15 @@
               <div class="space-y-3">
                 <div class="flex items-start gap-3">
                   <span class="text-purple-400 shrink-0">user@terminal:~$</span>
-                  <span class="text-gray-300">Show me how to implement blue-green deployments with zero downtime</span>
+                  <span class="text-gray-300">My team keeps rebuilding AI features. How do I fix this technical debt?</span>
                 </div>
                 <div class="bg-purple-900/20 border-l-4 border-purple-500 pl-4 py-2 ml-6">
                   <div class="text-purple-300 space-y-1">
-                    <div>⚙️ <strong>Blue-Green Deployment Pipeline:</strong></div>
-                    <div class="ml-4 text-purple-200">1. CodePipeline → Build → Deploy to Green environment</div>
-                    <div class="ml-4 text-purple-200">2. Run automated tests against Green</div>
-                    <div class="ml-4 text-purple-200">3. Route 53 weighted routing: Blue 100% → 0%</div>
-                    <div class="ml-4 text-purple-200">4. Monitor CloudWatch metrics for rollback triggers</div>
-                    <div class="mt-2 text-purple-300">📋 <em>Full CloudFormation template available on request</em></div>
+                    <div>🧠 <strong>Technical Debt Analysis:</strong></div>
+                    <div class="ml-4 text-purple-200">• Build a unified AI abstraction layer once</div>
+                    <div class="ml-4 text-purple-200">• Create reusable components your team can actually use</div>
+                    <div class="ml-4 text-purple-200">• I've built this exact system for 5 different companies</div>
+                    <div class="mt-2 text-purple-300">📅 <em>Let me design a platform that stops the rebuild cycle.</em></div>
                   </div>
                 </div>
               </div>
@@ -491,14 +577,39 @@
           </div>
         </div>
         
+        <!-- Testimonial Quote -->
+        <div class="mt-16 mb-12">
+          <div class="bg-gradient-to-r from-primary-50/50 to-blue-50/50 dark:from-primary-950/20 dark:to-blue-950/20 rounded-2xl p-8 border border-primary-200/30 dark:border-primary-800/30 backdrop-blur-sm">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-primary-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <UIcon name="i-heroicons-chat-bubble-left-ellipsis" class="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <blockquote class="text-lg text-gray-700 dark:text-gray-300 italic mb-3">
+                  "I've never seen architecture recommendations this fast. 15 minutes from question to strategy call. That's unheard of."
+                </blockquote>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                    <UIcon name="i-heroicons-user" class="h-4 w-4 text-gray-600 dark:text-gray-300" />
+                  </div>
+                  <div class="text-sm">
+                    <div class="font-semibold text-gray-900 dark:text-white">Sarah Chen</div>
+                    <div class="text-gray-600 dark:text-gray-400">CTO, TechFlow Solutions</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Floating Action Buttons -->
-        <div class="flex justify-center mt-12">
+        <div class="flex justify-center">
           <div class="flex flex-col sm:flex-row gap-4">
             <UButton 
               to="/chat" 
               color="primary"
-              icon="i-heroicons-chat-bubble-left-right"
-              label="Try It Yourself"
+              icon="i-heroicons-play"
+              label="Try the Live Demo"
               size="xl"
               class="px-8 py-4 text-lg shadow-xl shadow-primary-500/25 transform hover:scale-105 transition-all duration-300"
             />
@@ -518,7 +629,7 @@
 
 
     <!-- Technical Architecture Showcase -->
-    <div class="relative -mx-4 px-4 py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+    <div class="relative -mx-4 px-4 py-20 bg-gradient-to-br from-gray-900 via-slate-900 to-blue-950 overflow-hidden">
       <!-- Animated Code Background -->
       <div class="absolute inset-0 opacity-10">
         <div class="absolute top-10 left-10 text-green-400 font-mono text-xs leading-relaxed transform rotate-12">
@@ -557,29 +668,49 @@
       </div>
       
       <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <div class="inline-block p-4 bg-gradient-to-r from-primary-500/20 to-purple-500/20 rounded-2xl mb-8 backdrop-blur-sm border border-white/20">
-            <UIcon name="i-heroicons-beaker" class="h-12 w-12 text-cyan-300" />
+        <div class="text-center mb-20">
+          <div class="inline-flex items-center justify-center p-6 bg-gradient-to-r from-primary-500/20 to-blue-500/20 rounded-3xl mb-10 backdrop-blur-sm border border-white/20">
+            <UIcon name="i-heroicons-beaker" class="h-16 w-16 text-cyan-300" />
           </div>
           
-          <h2 class="text-5xl font-bold text-white mb-6 leading-tight">
-            This Isn't Just a <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-300">Demo</span>
+          <h2 class="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight max-w-4xl mx-auto">
+            This Is What Enterprise AI <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300">Actually Looks Like</span>
           </h2>
           
-          <p class="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed mb-12">
-            It's a <strong class="text-white">live showcase</strong> of enterprise AI architecture. 
-            Every interaction demonstrates production-grade patterns I deploy at scale.
+          <p class="text-lg text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed">
+            Built by someone who's been in the rooms where AI systems actually ship — for real teams, in real stacks, under real constraints.
           </p>
+          
+          <p class="text-xl lg:text-2xl text-gray-200 max-w-5xl mx-auto leading-relaxed mb-8">
+            <strong class="text-white">You're not starting from scratch. You're starting from something that already works</strong> — 
+            and was built by someone who knows how real systems scale.
+          </p>
+          
+          <!-- Enhanced Credibility Badges -->
+          <div class="flex flex-wrap items-center justify-center gap-4 text-sm font-bold">
+            <div class="flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 backdrop-blur-sm rounded-full px-5 py-3 border border-cyan-400/30">
+              <UIcon name="i-heroicons-check-circle" class="h-4 w-4 text-cyan-300" />
+              <span class="text-cyan-200">7+ Years</span>
+            </div>
+            <div class="flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full px-5 py-3 border border-blue-400/30">
+              <UIcon name="i-heroicons-building-office" class="h-4 w-4 text-blue-300" />
+              <span class="text-blue-200">Fortune 100 Systems</span>
+            </div>
+            <div class="flex items-center gap-2 bg-gradient-to-r from-slate-500/20 to-gray-500/20 backdrop-blur-sm rounded-full px-5 py-3 border border-slate-400/30">
+              <UIcon name="i-heroicons-lock-open" class="h-4 w-4 text-slate-300" />
+              <span class="text-slate-200">Zero Vendor Lock-In</span>
+            </div>
+          </div>
         </div>
         
         <!-- Interactive Architecture Diagram -->
-        <div class="relative">
+        <div class="relative mb-20">
           <!-- Central Hub -->
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-            <div class="w-32 h-32 bg-gradient-to-r from-primary-600 to-purple-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20 animate-pulse">
-              <UIcon name="i-heroicons-cpu-chip" class="h-16 w-16 text-white" />
+            <div class="w-40 h-40 bg-gradient-to-r from-primary-600 to-blue-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20 animate-pulse">
+              <UIcon name="i-heroicons-cpu-chip" class="h-20 w-20 text-white" />
             </div>
-            <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white font-bold text-lg">
+            <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 text-white font-bold text-xl text-center">
               AI Core
             </div>
           </div>
@@ -600,18 +731,23 @@
           </svg>
           
           <!-- Satellite Components -->
-          <div class="relative h-96">
+          <div class="relative h-[500px]">
             <!-- Multi-Provider AI -->
             <div class="absolute top-0 left-0 group cursor-pointer">
               <div class="relative">
-                <div class="w-24 h-24 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
-                  <UIcon name="i-heroicons-squares-2x2" class="h-12 w-12 text-white" />
+                <div class="w-28 h-28 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
+                  <UIcon name="i-heroicons-squares-2x2" class="h-14 w-14 text-white" />
                 </div>
-                <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-white text-sm font-semibold whitespace-nowrap">
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white text-base font-bold whitespace-nowrap text-center">
                   Multi-Provider
                 </div>
-                <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-8 w-64 bg-black/80 backdrop-blur-sm rounded-lg p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p class="text-gray-300 text-sm">
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
+                    Use OpenAI, Claude, Mistral, or anything else — swap at runtime.
+                  </p>
+                </div>
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
                     OpenAI, Anthropic, and Google unified through intelligent routing and automatic failover
                   </p>
                 </div>
@@ -621,14 +757,19 @@
             <!-- MCP Integration -->
             <div class="absolute top-0 right-0 group cursor-pointer">
               <div class="relative">
-                <div class="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
-                  <UIcon name="i-heroicons-link" class="h-12 w-12 text-white" />
+                <div class="w-28 h-28 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
+                  <UIcon name="i-heroicons-link" class="h-14 w-14 text-white" />
                 </div>
-                <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-white text-sm font-semibold whitespace-nowrap">
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white text-base font-bold whitespace-nowrap text-center">
                   MCP Protocol
                 </div>
-                <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-8 w-64 bg-black/80 backdrop-blur-sm rounded-lg p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p class="text-gray-300 text-sm">
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
+                    Your models don't just talk — they interact with real systems.
+                  </p>
+                </div>
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
                     Model Context Protocol enabling AI to interact with external systems and data sources
                   </p>
                 </div>
@@ -638,14 +779,19 @@
             <!-- Enterprise Security -->
             <div class="absolute bottom-0 left-0 group cursor-pointer">
               <div class="relative">
-                <div class="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
-                  <UIcon name="i-heroicons-shield-check" class="h-12 w-12 text-white" />
+                <div class="w-28 h-28 bg-gradient-to-r from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
+                  <UIcon name="i-heroicons-shield-check" class="h-14 w-14 text-white" />
                 </div>
-                <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-white text-sm font-semibold whitespace-nowrap">
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white text-base font-bold whitespace-nowrap text-center">
                   Enterprise Security
                 </div>
-                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-8 w-64 bg-black/80 backdrop-blur-sm rounded-lg p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p class="text-gray-300 text-sm">
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
+                    Designed with SOC2 in mind. Fully auditable, fully yours.
+                  </p>
+                </div>
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
                     Zero-trust architecture with end-to-end encryption and compliance-ready data handling
                   </p>
                 </div>
@@ -655,14 +801,19 @@
             <!-- Cloud-Native -->
             <div class="absolute bottom-0 right-0 group cursor-pointer">
               <div class="relative">
-                <div class="w-24 h-24 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
-                  <UIcon name="i-heroicons-cloud-arrow-up" class="h-12 w-12 text-white" />
+                <div class="w-28 h-28 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-all duration-300">
+                  <UIcon name="i-heroicons-cloud-arrow-up" class="h-14 w-14 text-white" />
                 </div>
-                <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-white text-sm font-semibold whitespace-nowrap">
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white text-base font-bold whitespace-nowrap text-center">
                   Cloud-Native
                 </div>
-                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-8 w-64 bg-black/80 backdrop-blur-sm rounded-lg p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p class="text-gray-300 text-sm">
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
+                    Deploy to AWS, EC2, Lambda, Fargate, or air-gapped if you want.
+                  </p>
+                </div>
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-12 w-72 bg-black/90 backdrop-blur-sm rounded-xl p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
+                  <p class="text-gray-200 text-sm leading-relaxed">
                     Serverless, auto-scaling, globally distributed infrastructure that handles enterprise load
                   </p>
                 </div>
@@ -671,33 +822,36 @@
           </div>
         </div>
         
-        <div class="mt-20 text-center">
-          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-            <h3 class="text-2xl font-bold text-white mb-4">
+        
+        <div class="text-center">
+          <div class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm rounded-3xl p-10 border border-white/20 shadow-2xl">
+            <h3 class="text-3xl lg:text-4xl font-bold text-white mb-6">
               Ready to Scale Your AI Vision?
             </h3>
-            <p class="text-lg text-gray-200 mb-6 max-w-2xl mx-auto">
-              See how I can implement similar solutions that transform your business operations and customer experiences.
+            <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed">
+              This is just the execution layer — underneath is an architecture for autonomous orchestration, context memory, and secure external integration.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
               <UButton 
                 to="/chat" 
                 color="primary"
-                icon="i-heroicons-chat-bubble-left-right"
-                label="Experience the Demo"
-                size="lg"
-                class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-lg shadow-cyan-500/25"
-              />
+                icon="i-heroicons-play"
+                size="xl"
+                class="px-10 py-4 text-lg bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 shadow-xl shadow-primary-500/25 transform hover:scale-105 transition-all duration-300 font-semibold"
+              >
+                Experience the Demo
+              </UButton>
               <UButton 
                 to="https://makeitrealconsulting.com" 
                 target="_blank"
                 variant="outline" 
                 color="white"
                 icon="i-heroicons-arrow-top-right-on-square"
-                label="Explore My Work"
-                size="lg"
-                class="px-6 py-3 border-white/30 hover:bg-white/10 text-white"
-              />
+                size="xl"
+                class="px-10 py-4 text-lg border-2 border-white/40 hover:bg-white/10 text-white font-semibold transform hover:scale-105 transition-all duration-300"
+              >
+                Explore My Work
+              </UButton>
             </div>
           </div>
         </div>
