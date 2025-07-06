@@ -266,7 +266,6 @@ export const useProviders = () => {
   const providers = ref<any[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
-  const providerHealth = ref<Record<string, any>>({})
 
   /**
    * Load providers
@@ -277,8 +276,8 @@ export const useProviders = () => {
 
     try {
       const response = await providerService.value.getProviders()
-      console.log('Raw providers response:', response)
-      console.log('Providers data:', response.providers)
+      console.log('Raw providers response in useApi:', response)
+      console.log('Providers data in useApi:', response.providers)
       providers.value = response.providers || []
       return response
     } catch (err) {
@@ -310,28 +309,6 @@ export const useProviders = () => {
   }
 
   /**
-   * Check provider health
-   */
-  const checkProviderHealth = async (provider?: string) => {
-    try {
-      if (provider) {
-        const health = await providerService.value.checkProviderHealth(provider)
-        providerHealth.value[provider] = health
-        return health
-      } else {
-        const allHealth = await providerService.value.checkAllProvidersHealth()
-        providerHealth.value = Object.fromEntries(
-          allHealth.map(h => [h.provider, h])
-        )
-        return allHealth
-      }
-    } catch (err) {
-      console.error('Failed to check provider health:', err)
-      throw err
-    }
-  }
-
-  /**
    * Test a provider
    */
   const testProvider = async (provider: string, model?: string) => {
@@ -352,14 +329,12 @@ export const useProviders = () => {
   return {
     // State
     providers: readonly(providers),
-    providerHealth: readonly(providerHealth),
     isLoading: readonly(isLoading),
     error: readonly(error),
 
     // Methods
     loadProviders,
     getModels,
-    checkProviderHealth,
     testProvider
   }
 }
